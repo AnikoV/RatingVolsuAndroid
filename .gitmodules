@@ -1,0 +1,3 @@
+[submodule "retrofit"]
+	path = retrofit
+	url = git@github.com:square/retrofit.git
