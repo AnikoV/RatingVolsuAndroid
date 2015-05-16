@@ -1,0 +1,3 @@
+[submodule "robospice"]
+	path = robospice
+	url = git@github.com:stephanenicolas/robospice.git
