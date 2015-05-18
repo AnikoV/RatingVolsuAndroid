@@ -1,4 +1,5 @@
 package com.example.anishchenko.ratingvolsu.activities;
+
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -7,7 +8,9 @@ import android.widget.TextView;
 import com.example.anishchenko.ratingvolsu.R;
 import com.example.anishchenko.ratingvolsu.beans.FacultBean;
 import com.example.anishchenko.ratingvolsu.requests.GetFacultsRequest;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
+import com.google.gson.reflect.TypeToken;
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
@@ -30,7 +33,7 @@ public class MainActivity extends BaseSpiceActivity {
         _facultsRequest = new GetFacultsRequest();
         _facultsRequestListener = new GetFacultsListener();
         _spiceManager = getSpiceManager();
-        _spiceManager.execute(_facultsRequest,_facultsRequestListener);
+        _spiceManager.execute(_facultsRequest, _facultsRequestListener);
     }
 
     @Override
@@ -55,20 +58,22 @@ public class MainActivity extends BaseSpiceActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private class GetFacultsListener implements RequestListener<JsonElement>
-    {
+    private class GetFacultsListener implements RequestListener<JsonElement> {
 
         @Override
         public void onRequestFailure(SpiceException spiceException) {
             AndroidLog log = new AndroidLog("MYLOG");
             log.log(spiceException.getCause().getLocalizedMessage());
-            TextView textView =  (TextView)findViewById(R.id.Result);
+            TextView textView = (TextView) findViewById(R.id.Result);
             textView.setText(spiceException.getLocalizedMessage());
         }
 
         @Override
         public void onRequestSuccess(JsonElement bean) {
-            TextView textView =  (TextView)findViewById(R.id.Result);
+            ArrayList<FacultBean> list = new GsonBuilder().create().fromJson(bean,
+                    new TypeToken<ArrayList<FacultBean>>() {
+                    }.getType());
+            TextView textView = (TextView) findViewById(R.id.Result);
 
 
         }
