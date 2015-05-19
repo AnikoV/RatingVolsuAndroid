@@ -3,11 +3,17 @@ package com.example.anishchenko.ratingvolsu.activities;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import com.example.anishchenko.ratingvolsu.R;
 import com.example.anishchenko.ratingvolsu.beans.FacultBean;
+import com.example.anishchenko.ratingvolsu.beans.GroupBean;
+import com.example.anishchenko.ratingvolsu.beans.StudentBean;
 import com.example.anishchenko.ratingvolsu.requests.GetFacultsRequest;
+import com.example.anishchenko.ratingvolsu.requests.GetGroupsRequest;
+import com.example.anishchenko.ratingvolsu.requests.GetSemestrListRequest;
+import com.example.anishchenko.ratingvolsu.requests.GetStudentListRequest;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
@@ -30,10 +36,7 @@ public class MainActivity extends BaseSpiceActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        _facultsRequest = new GetFacultsRequest();
-        _facultsRequestListener = new GetFacultsListener();
-        _spiceManager = getSpiceManager();
-        _spiceManager.execute(_facultsRequest, _facultsRequestListener);
+
     }
 
     @Override
@@ -58,12 +61,30 @@ public class MainActivity extends BaseSpiceActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+    //region OnClick
+    public void OnGetFacultsClick(View view) {
+        getSpiceManager().execute(new GetFacultsRequest(), new GetFacultsListener());
+    }
+
+    public void OnGetGroupsClick(View view) {
+        getSpiceManager().execute(new GetGroupsRequest("3"), new GetGroupsListener());
+    }
+
+    public void OnGetSemestrClick(View view) {
+        getSpiceManager().execute(new GetSemestrListRequest("4681"), new GetSemestrListener());
+    }
+
+    public void OnGetStudentClick(View view) {
+        getSpiceManager().execute(new GetStudentListRequest("4681"), new GetStudentListener());
+    }
+    //endregion
+
+    //region Listeners
     private class GetFacultsListener implements RequestListener<JsonElement> {
 
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            AndroidLog log = new AndroidLog("MYLOG");
-            log.log(spiceException.getCause().getLocalizedMessage());
             TextView textView = (TextView) findViewById(R.id.Result);
             textView.setText(spiceException.getLocalizedMessage());
         }
@@ -74,10 +95,84 @@ public class MainActivity extends BaseSpiceActivity {
                     new TypeToken<ArrayList<FacultBean>>() {
                     }.getType());
             TextView textView = (TextView) findViewById(R.id.Result);
-
-
+            String s ="";
+            for(FacultBean item : list)
+            {
+                s += item.Id + "|"+ item.Name;
+            }
+            textView.setText(s);
         }
     }
+
+    private class GetGroupsListener implements RequestListener<JsonElement> {
+
+        @Override
+        public void onRequestFailure(SpiceException spiceException) {
+
+        }
+
+        @Override
+        public void onRequestSuccess(JsonElement jsonElement) {
+            ArrayList<GroupBean> list = new GsonBuilder().create().fromJson(jsonElement,
+                    new TypeToken<ArrayList<GroupBean>>() {
+                    }.getType());
+
+            TextView textView = (TextView) findViewById(R.id.Result);
+            String s ="";
+            for(GroupBean item : list)
+            {
+                s += String.format("|%s|%s|%s|%s|%d",item.Id,item.Name,item.Type, item.Year, item.SemestrCount);
+            }
+            textView.setText(s);
+        }
+    }
+
+    private class GetSemestrListener implements RequestListener<JsonElement>
+    {
+
+        @Override
+        public void onRequestFailure(SpiceException spiceException) {
+
+        }
+
+        @Override
+        public void onRequestSuccess(JsonElement jsonElement) {
+            ArrayList<String> list = new GsonBuilder().create().fromJson(jsonElement,
+                    new TypeToken<ArrayList<String>>() {
+                    }.getType());
+
+            TextView textView = (TextView) findViewById(R.id.Result);
+            String s ="";
+            for(String item : list)
+            {
+                s += item +"|";
+            }
+            textView.setText(s);
+        }
+    }
+
+    private class GetStudentListener implements RequestListener<JsonElement> {
+        @Override
+        public void onRequestFailure(SpiceException spiceException) {
+
+        }
+
+        @Override
+        public void onRequestSuccess(JsonElement jsonElement) {
+            ArrayList<StudentBean> list = new GsonBuilder().create().fromJson(jsonElement,
+                    new TypeToken<ArrayList<StudentBean>>() {
+                    }.getType());
+
+            TextView textView = (TextView) findViewById(R.id.Result);
+            String s ="";
+            for(StudentBean item : list)
+            {
+                s += item.Id +"|" + item.Number;
+            }
+            textView.setText(s);
+        }
+    }
+    //endregion
 
 
 }

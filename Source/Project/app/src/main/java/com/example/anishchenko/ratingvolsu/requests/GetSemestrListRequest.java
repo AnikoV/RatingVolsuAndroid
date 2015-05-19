@@ -4,19 +4,20 @@ import com.example.anishchenko.ratingvolsu.utils.Feed;
 import com.google.gson.JsonElement;
 import com.octo.android.robospice.request.retrofit.RetrofitSpiceRequest;
 
-import java.util.HashMap;
-import java.util.Map;
+/**
+ * Created by Владимир on 19.05.2015.
+ */
+public class GetSemestrListRequest extends RetrofitSpiceRequest<JsonElement,Feed> {
+    private final String GroupId;
 
-
-public class GetFacultsRequest extends RetrofitSpiceRequest<JsonElement,Feed> {
-
-    public GetFacultsRequest() {
+    public GetSemestrListRequest(String groupId)
+    {
         super(JsonElement.class, Feed.class);
+        GroupId = groupId;
     }
 
     @Override
     public JsonElement loadDataFromNetwork() throws Exception {
-
-        return getService().getFacults(0);
+        return getService().getSemestrs(GroupId);
     }
 }
