@@ -6,8 +6,7 @@ import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.POST;
 
-
-public interface Feed {
+public interface IRequestManager {
 
     @FormUrlEncoded
     @POST("/facult_req.php")
@@ -24,4 +23,14 @@ public interface Feed {
     @FormUrlEncoded
     @POST("/stud_req.php")
     JsonElement getStudentList(@Field("group_id") String groupId);
+
+    @FormUrlEncoded
+    @POST("/group_rat.php")
+    JsonElement getRatingOfGroup(@Field("Fak") String FacultId, @Field("Group") String GroupId,
+                                 @Field("Semestr") String SemestrId);
+
+    @FormUrlEncoded
+    @POST("/group_rat.php")
+    JsonElement getRatingOfStudent(@Field("Fak") String FacultId, @Field("Group") String GroupId,
+                                   @Field("Semestr") String SemestrId, @Field("Zach") String StudentId);
 }

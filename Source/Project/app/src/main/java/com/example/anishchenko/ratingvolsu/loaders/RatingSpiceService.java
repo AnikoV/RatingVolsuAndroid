@@ -1,5 +1,5 @@
 package com.example.anishchenko.ratingvolsu.loaders;
-import com.example.anishchenko.ratingvolsu.utils.Feed;
+import com.example.anishchenko.ratingvolsu.utils.IRequestManager;
 import com.octo.android.robospice.retrofit.RetrofitGsonSpiceService;
 
 import retrofit.RequestInterceptor;
@@ -11,7 +11,7 @@ public class RatingSpiceService extends RetrofitGsonSpiceService {
     @Override
     public void onCreate () {
         super.onCreate();
-        addRetrofitInterface(Feed.class);
+        addRetrofitInterface(IRequestManager.class);
     }
 
     @Override

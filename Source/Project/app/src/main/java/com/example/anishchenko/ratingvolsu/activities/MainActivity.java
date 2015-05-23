@@ -9,9 +9,13 @@ import android.widget.TextView;
 import com.example.anishchenko.ratingvolsu.R;
 import com.example.anishchenko.ratingvolsu.beans.FacultBean;
 import com.example.anishchenko.ratingvolsu.beans.GroupBean;
+import com.example.anishchenko.ratingvolsu.beans.GroupRatingBean;
 import com.example.anishchenko.ratingvolsu.beans.StudentBean;
+import com.example.anishchenko.ratingvolsu.beans.StudentRatingBean;
 import com.example.anishchenko.ratingvolsu.requests.GetFacultsRequest;
 import com.example.anishchenko.ratingvolsu.requests.GetGroupsRequest;
+import com.example.anishchenko.ratingvolsu.requests.GetRatingOfGroupRequest;
+import com.example.anishchenko.ratingvolsu.requests.GetRatingOfStudentRequest;
 import com.example.anishchenko.ratingvolsu.requests.GetSemestrListRequest;
 import com.example.anishchenko.ratingvolsu.requests.GetStudentListRequest;
 import com.google.gson.GsonBuilder;
@@ -20,11 +24,7 @@ import com.google.gson.reflect.TypeToken;
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
-
 import java.util.ArrayList;
-
-import retrofit.android.AndroidLog;
-
 
 public class MainActivity extends BaseSpiceActivity {
 
@@ -78,6 +78,15 @@ public class MainActivity extends BaseSpiceActivity {
     public void OnGetStudentClick(View view) {
         getSpiceManager().execute(new GetStudentListRequest("4681"), new GetStudentListener());
     }
+
+    public void OnGetGroupRatingClick(View view) {
+        getSpiceManager().execute(new GetRatingOfGroupRequest("3","4681","1"), new GetRatingOfGroupListener());
+    }
+
+    public void OnGetSRatingClick(View view) {
+        getSpiceManager().execute(new GetRatingOfStudentRequest("3","4681","1", "66833"), new GetStudentRatingListener());
+    }
+
     //endregion
 
     //region Listeners
@@ -127,8 +136,7 @@ public class MainActivity extends BaseSpiceActivity {
         }
     }
 
-    private class GetSemestrListener implements RequestListener<JsonElement>
-    {
+    private class GetSemestrListener implements RequestListener<JsonElement>{
 
         @Override
         public void onRequestFailure(SpiceException spiceException) {
@@ -151,7 +159,8 @@ public class MainActivity extends BaseSpiceActivity {
         }
     }
 
-    private class GetStudentListener implements RequestListener<JsonElement> {
+    private class GetStudentListener implements RequestListener<JsonElement>{
+
         @Override
         public void onRequestFailure(SpiceException spiceException) {
 
@@ -170,6 +179,44 @@ public class MainActivity extends BaseSpiceActivity {
                 s += item.Id +"|" + item.Number;
             }
             textView.setText(s);
+        }
+    }
+
+    private class GetStudentRatingListener implements  RequestListener<JsonElement>{
+
+        @Override
+        public void onRequestFailure(SpiceException spiceException) {
+
+        }
+
+        @Override
+        public void onRequestSuccess(JsonElement jsonElement) {
+            StudentRatingBean list = new GsonBuilder().create().fromJson(jsonElement,
+                    StudentRatingBean.class);
+
+            TextView textView = (TextView) findViewById(R.id.Result);
+            String s ="SUCCES 2";
+            textView.setText(s);
+
+        }
+    }
+
+    private class GetRatingOfGroupListener implements RequestListener<JsonElement>{
+
+        @Override
+        public void onRequestFailure(SpiceException spiceException) {
+
+        }
+
+        @Override
+        public void onRequestSuccess(JsonElement jsonElement) {
+            GroupRatingBean list = new GsonBuilder().create().fromJson(jsonElement,
+                    GroupRatingBean.class);
+
+            TextView textView = (TextView) findViewById(R.id.Result);
+            String s ="SUCCES";
+            textView.setText(s);
+
         }
     }
     //endregion

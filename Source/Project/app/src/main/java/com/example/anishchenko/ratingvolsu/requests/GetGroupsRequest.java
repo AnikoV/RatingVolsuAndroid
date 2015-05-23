@@ -1,17 +1,17 @@
 package com.example.anishchenko.ratingvolsu.requests;
 
-import com.example.anishchenko.ratingvolsu.utils.Feed;
+import com.example.anishchenko.ratingvolsu.utils.IRequestManager;
 import com.google.gson.JsonElement;
 import com.octo.android.robospice.request.retrofit.RetrofitSpiceRequest;
 
 
-public class GetGroupsRequest extends RetrofitSpiceRequest<JsonElement,Feed>{
+public class GetGroupsRequest extends RetrofitSpiceRequest<JsonElement,IRequestManager>{
 
     private final String FacultId;
 
     public GetGroupsRequest(String facultId)
     {
-        super(JsonElement.class, Feed.class);
+        super(JsonElement.class, IRequestManager.class);
         FacultId = facultId;
     }
 

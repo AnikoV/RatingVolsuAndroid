@@ -1,17 +1,14 @@
 package com.example.anishchenko.ratingvolsu.requests;
 
-import com.example.anishchenko.ratingvolsu.utils.Feed;
+import com.example.anishchenko.ratingvolsu.utils.IRequestManager;
 import com.google.gson.JsonElement;
 import com.octo.android.robospice.request.retrofit.RetrofitSpiceRequest;
 
-import java.util.HashMap;
-import java.util.Map;
 
-
-public class GetFacultsRequest extends RetrofitSpiceRequest<JsonElement,Feed> {
+public class GetFacultsRequest extends RetrofitSpiceRequest<JsonElement,IRequestManager> {
 
     public GetFacultsRequest() {
-        super(JsonElement.class, Feed.class);
+        super(JsonElement.class, IRequestManager.class);
     }
 
     @Override
