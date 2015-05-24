@@ -30,7 +30,7 @@ public interface IRequestManager {
                                  @Field("Semestr") String SemestrId);
 
     @FormUrlEncoded
-    @POST("/group_rat.php")
+    @POST("/stud_rat.php")
     JsonElement getRatingOfStudent(@Field("Fak") String FacultId, @Field("Group") String GroupId,
                                    @Field("Semestr") String SemestrId, @Field("Zach") String StudentId);
 }

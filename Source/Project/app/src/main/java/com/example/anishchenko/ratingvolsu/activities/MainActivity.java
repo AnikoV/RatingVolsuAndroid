@@ -1,6 +1,7 @@
 package com.example.anishchenko.ratingvolsu.activities;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,6 +26,7 @@ import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class MainActivity extends BaseSpiceActivity {
 
