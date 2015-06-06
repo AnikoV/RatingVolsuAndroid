@@ -4,9 +4,6 @@ import com.example.anishchenko.ratingvolsu.utils.IRequestManager;
 import com.google.gson.JsonElement;
 import com.octo.android.robospice.request.retrofit.RetrofitSpiceRequest;
 
-/**
- * Created by Владимир on 19.05.2015.
- */
 public class GetSemestrListRequest extends RetrofitSpiceRequest<JsonElement,IRequestManager> {
     private final String GroupId;
 
