@@ -1,5 +1,6 @@
 package com.example.anishchenko.ratingvolsu.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -47,6 +48,10 @@ public class MainActivity extends BaseSpiceActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(R.string.main_title);
 }
+
+    public void FobOnClick(View view) {
+        startActivity(new Intent(this, InputDataActivity.class));
+    }
 
 //    @Override
 //    public boolean onOptionsItemSelected(MenuItem item) {
