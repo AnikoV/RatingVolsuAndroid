@@ -1,11 +1,12 @@
 package com.example.anishchenko.ratingvolsu.activities;
 
 import android.app.Activity;
+import android.support.v7.app.ActionBarActivity;
 
 import com.example.anishchenko.ratingvolsu.loaders.RatingSpiceService;
 import com.octo.android.robospice.SpiceManager;
 
-public class BaseSpiceActivity extends Activity {
+public class BaseSpiceActivity extends ActionBarActivity {
 
     private SpiceManager spiceManager = new SpiceManager(RatingSpiceService.class);
 
