@@ -1,5 +1,8 @@
 package com.example.anishchenko.ratingvolsu.utils;
 
+import com.example.anishchenko.ratingvolsu.beans.FacultBean;
+import com.example.anishchenko.ratingvolsu.beans.GroupBean;
+import com.example.anishchenko.ratingvolsu.beans.StudentBean;
 import com.google.gson.JsonElement;
 
 import retrofit.http.Field;
@@ -10,11 +13,11 @@ public interface IRequestManager {
 
     @FormUrlEncoded
     @POST("/facult_req.php")
-    JsonElement getFacults(@Field("get_lists") int param);
+    FacultBean[] getFacults(@Field("get_lists") int param);
 
     @FormUrlEncoded
     @POST("/group_req.php")
-    JsonElement getGroups(@Field("fak_id") String facultId);
+    GroupBean[] getGroups(@Field("fak_id") String facultId);
 
     @FormUrlEncoded
     @POST("/sem_req.php")
@@ -22,7 +25,7 @@ public interface IRequestManager {
 
     @FormUrlEncoded
     @POST("/stud_req.php")
-    JsonElement getStudentList(@Field("group_id") String groupId);
+    StudentBean[] getStudentList(@Field("group_id") String groupId);
 
     @FormUrlEncoded
     @POST("/group_rat.php")

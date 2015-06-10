@@ -1,20 +1,20 @@
 package com.example.anishchenko.ratingvolsu.requests;
 
+import com.example.anishchenko.ratingvolsu.beans.StudentBean;
 import com.example.anishchenko.ratingvolsu.utils.IRequestManager;
-import com.google.gson.JsonElement;
 import com.octo.android.robospice.request.retrofit.RetrofitSpiceRequest;
 
-public class GetStudentListRequest extends RetrofitSpiceRequest<JsonElement,IRequestManager>{
+public class GetStudentListRequest extends RetrofitSpiceRequest<StudentBean[], IRequestManager> {
 
     private final String GroupId;
 
-    public GetStudentListRequest(String groupId)
-    {
-        super(JsonElement.class,IRequestManager.class);
+    public GetStudentListRequest(String groupId) {
+        super(StudentBean[].class, IRequestManager.class);
         GroupId = groupId;
     }
+
     @Override
-    public JsonElement loadDataFromNetwork() throws Exception {
+    public StudentBean[] loadDataFromNetwork() throws Exception {
         return getService().getStudentList(GroupId);
     }
 }

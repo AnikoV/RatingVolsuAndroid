@@ -5,4 +5,14 @@
     <string name="action_settings">Settings</string>
     <string name="main_title">Рейтинг ВолГУ</string>
     <string name="title_activity_input_data">Ввод Данных</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="tab_title_favorite">Избранное</string>
+    <string name="tab_title_last">Последнее</string>
+    <string name="tab_title_inst">Институты</string>
+    <string name="tab_title_group">Группа</string>
+    <string name="tab_title_number_z">Номер зачетки</string>
+    <string name="tab_title_sem">Семестр</string>
+    <string name="semestr_format_title">%d семестр</string>
 </resources>

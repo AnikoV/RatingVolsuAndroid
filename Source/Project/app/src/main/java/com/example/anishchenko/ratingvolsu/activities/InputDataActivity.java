@@ -1,14 +1,31 @@
 package com.example.anishchenko.ratingvolsu.activities;
 
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.util.SparseArray;
 
 import com.example.anishchenko.ratingvolsu.R;
+import com.example.anishchenko.ratingvolsu.beans.FacultBean;
+import com.example.anishchenko.ratingvolsu.beans.GroupBean;
+import com.example.anishchenko.ratingvolsu.fragments.BaseListFragment;
+import com.example.anishchenko.ratingvolsu.fragments.GroupListFragment;
+import com.example.anishchenko.ratingvolsu.fragments.InstituteListFragment;
+import com.example.anishchenko.ratingvolsu.fragments.MainPageFragment;
+import com.example.anishchenko.ratingvolsu.fragments.SemestrListFragment;
+import com.example.anishchenko.ratingvolsu.fragments.StudentListFragment;
 
-public class InputDataActivity extends BaseSpiceActivity {
+public class InputDataActivity extends BaseSpiceActivity implements BaseListFragment.IPageSelector {
+
+    private ViewPager viewPager;
+    private InputDataPagerAdapter mAdapter;
+    private FacultBean selectedFacultet = null;
+    private GroupBean selecteGroup = null;
+    private SemestrListFragment.SemestrBean selectedSemesr = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,27 +38,101 @@ public class InputDataActivity extends BaseSpiceActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(R.string.main_title);
+        TabLayout tablayout = (TabLayout) findViewById(R.id.tablayout);
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        mAdapter = new InputDataPagerAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(mAdapter);
+        tablayout.setupWithViewPager(viewPager);
+        tablayout.setTabGravity(TabLayout.GRAVITY_FILL);
+        tablayout.setTabMode(TabLayout.MODE_SCROLLABLE);
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_input_data, menu);
-        return true;
+    public void onItemSelected(int type, Object value) {
+        int nextPosition = viewPager.getCurrentItem() + 1;
+        switch (type) {
+            case 0:
+                selectedFacultet = (FacultBean) value;
+                selecteGroup = null;
+                selectedSemesr = null;
+                viewPager.setCurrentItem(nextPosition, true);
+                if (mAdapter.registeredFragments.get(nextPosition) != null)
+                    ((GroupListFragment) mAdapter.registeredFragments.get(nextPosition)).setFackId(selectedFacultet.Id);
+                break;
+            case 1:
+                selecteGroup = (GroupBean) value;
+                selectedSemesr = null;
+                viewPager.setCurrentItem(nextPosition, true);
+                if (mAdapter.registeredFragments.get(nextPosition) != null)
+                    ((SemestrListFragment) mAdapter.registeredFragments.get(nextPosition)).setGroup(selecteGroup);
+                break;
+            case 2:
+                selectedSemesr = (SemestrListFragment.SemestrBean) value;
+                viewPager.setCurrentItem(nextPosition, true);
+                if (mAdapter.registeredFragments.get(nextPosition) != null)
+                    ((StudentListFragment) mAdapter.registeredFragments.get(nextPosition)).setGroup(selecteGroup);
+                break;
+        }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+    private class InputDataPagerAdapter extends FragmentPagerAdapter {
+        SparseArray<Fragment> registeredFragments = new SparseArray<Fragment>();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        public InputDataPagerAdapter(FragmentManager fm) {
+            super(fm);
         }
 
-        return super.onOptionsItemSelected(item);
+        @Override
+        public Fragment getItem(int position) {
+            switch (position) {
+                case 0:
+                    InstituteListFragment instFragment = new InstituteListFragment();
+                    registeredFragments.append(position, instFragment);
+                    return instFragment;
+                case 1:
+                    GroupListFragment groupFragment = new GroupListFragment();
+                    registeredFragments.append(position, groupFragment);
+                    if (selectedFacultet != null)
+                        groupFragment.setFackId(selectedFacultet.Id);
+                    return groupFragment;
+                case 2:
+                    SemestrListFragment semestrFragment = new SemestrListFragment();
+                    registeredFragments.append(position, semestrFragment);
+                    if (selecteGroup != null)
+                        semestrFragment.setGroup(selecteGroup);
+                    return semestrFragment;
+                case 3:
+                    StudentListFragment studentFragment = new StudentListFragment();
+                    registeredFragments.append(position, studentFragment);
+                    if (selecteGroup != null)
+                        studentFragment.setGroup(selecteGroup);
+                    return studentFragment;
+                default:
+                    return new MainPageFragment();
+            }
+        }
+
+        @Override
+        public int getCount() {
+            return 4;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            switch (position) {
+                case 0:
+                    return getString(R.string.tab_title_inst);
+                case 1:
+                    return getString(R.string.tab_title_group);
+                case 2:
+                    return getString(R.string.tab_title_sem);
+                case 3:
+                default:
+                    return getString(R.string.tab_title_number_z);
+
+            }
+        }
+
     }
+
 }
