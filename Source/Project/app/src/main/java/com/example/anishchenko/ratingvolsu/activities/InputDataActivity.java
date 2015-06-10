@@ -12,6 +12,7 @@ import android.util.SparseArray;
 import com.example.anishchenko.ratingvolsu.R;
 import com.example.anishchenko.ratingvolsu.beans.FacultBean;
 import com.example.anishchenko.ratingvolsu.beans.GroupBean;
+import com.example.anishchenko.ratingvolsu.beans.StudentBean;
 import com.example.anishchenko.ratingvolsu.fragments.BaseListFragment;
 import com.example.anishchenko.ratingvolsu.fragments.GroupListFragment;
 import com.example.anishchenko.ratingvolsu.fragments.InstituteListFragment;
@@ -26,6 +27,7 @@ public class InputDataActivity extends BaseSpiceActivity implements BaseListFrag
     private FacultBean selectedFacultet = null;
     private GroupBean selecteGroup = null;
     private SemestrListFragment.SemestrBean selectedSemesr = null;
+    private StudentBean selectedStudent = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +57,7 @@ public class InputDataActivity extends BaseSpiceActivity implements BaseListFrag
                 selectedFacultet = (FacultBean) value;
                 selecteGroup = null;
                 selectedSemesr = null;
+                selectedStudent = null;
                 viewPager.setCurrentItem(nextPosition, true);
                 if (mAdapter.registeredFragments.get(nextPosition) != null)
                     ((GroupListFragment) mAdapter.registeredFragments.get(nextPosition)).setFackId(selectedFacultet.Id);
@@ -62,15 +65,21 @@ public class InputDataActivity extends BaseSpiceActivity implements BaseListFrag
             case 1:
                 selecteGroup = (GroupBean) value;
                 selectedSemesr = null;
+                selectedStudent = null;
                 viewPager.setCurrentItem(nextPosition, true);
                 if (mAdapter.registeredFragments.get(nextPosition) != null)
                     ((SemestrListFragment) mAdapter.registeredFragments.get(nextPosition)).setGroup(selecteGroup);
                 break;
             case 2:
                 selectedSemesr = (SemestrListFragment.SemestrBean) value;
+                selectedStudent = null;
                 viewPager.setCurrentItem(nextPosition, true);
                 if (mAdapter.registeredFragments.get(nextPosition) != null)
                     ((StudentListFragment) mAdapter.registeredFragments.get(nextPosition)).setGroup(selecteGroup);
+                break;
+            case 3:
+                selectedStudent = (StudentBean) value;
+                //TODO show FAB
                 break;
         }
     }
