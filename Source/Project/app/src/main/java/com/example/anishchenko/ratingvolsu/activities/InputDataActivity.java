@@ -1,5 +1,6 @@
 package com.example.anishchenko.ratingvolsu.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -10,15 +11,28 @@ import android.support.v7.widget.Toolbar;
 import android.util.SparseArray;
 
 import com.example.anishchenko.ratingvolsu.R;
+import com.example.anishchenko.ratingvolsu.beans.BasePredmetBean;
+import com.example.anishchenko.ratingvolsu.beans.BaseStudentBean;
 import com.example.anishchenko.ratingvolsu.beans.FacultBean;
 import com.example.anishchenko.ratingvolsu.beans.GroupBean;
+import com.example.anishchenko.ratingvolsu.beans.MarkBean;
 import com.example.anishchenko.ratingvolsu.beans.StudentBean;
+import com.example.anishchenko.ratingvolsu.db.DatabaseManager;
 import com.example.anishchenko.ratingvolsu.fragments.BaseListFragment;
 import com.example.anishchenko.ratingvolsu.fragments.GroupListFragment;
 import com.example.anishchenko.ratingvolsu.fragments.InstituteListFragment;
 import com.example.anishchenko.ratingvolsu.fragments.MainPageFragment;
 import com.example.anishchenko.ratingvolsu.fragments.SemestrListFragment;
 import com.example.anishchenko.ratingvolsu.fragments.StudentListFragment;
+import com.example.anishchenko.ratingvolsu.requests.GetRatingOfGroupRequest;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.octo.android.robospice.request.listener.RequestListener;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class InputDataActivity extends BaseSpiceActivity implements BaseListFragment.IPageSelector {
 
@@ -80,6 +94,40 @@ public class InputDataActivity extends BaseSpiceActivity implements BaseListFrag
             case 3:
                 selectedStudent = (StudentBean) value;
                 //TODO show FAB
+                getSpiceManager().execute(new GetRatingOfGroupRequest(selectedFacultet.Id, selecteGroup.Id, String.valueOf(selectedSemesr.count)),
+                        new RequestListener<JsonElement>() {
+                            @Override
+                            public void onRequestFailure(SpiceException spiceException) {
+
+                            }
+
+                            @Override
+                            public void onRequestSuccess(JsonElement jsonElement) {
+                                DatabaseManager dManager = DatabaseManager.INSTANCE;
+                                ArrayList<BasePredmetBean> data = new ArrayList<>();
+                                for (Map.Entry<String, JsonElement> entry : jsonElement.getAsJsonObject().get("Predmet").getAsJsonObject().entrySet()) {
+                                    JsonObject object = entry.getValue().getAsJsonObject();
+                                    data.add(new BasePredmetBean(object.get("Name").getAsString(), object.get("Type").getAsString(), entry.getKey()));
+                                }
+                                dManager.AddList(data, BasePredmetBean.class);
+                                String id = selectedFacultet.Id + selecteGroup.Id + selectedSemesr.title;
+                                dManager.addObject(new MarkBean(id), MarkBean.class);
+                                ArrayList<BaseStudentBean> students = new ArrayList<>();
+                                for (Map.Entry<String, JsonElement> entry : jsonElement.getAsJsonObject().get("Table").getAsJsonObject().entrySet()) {
+                                    JsonObject object = entry.getValue().getAsJsonObject();
+                                    String name = object.get("Name").getAsString();
+                                    HashMap<String, String> allPredmets = new HashMap<>();
+                                    for (Map.Entry<String, JsonElement> p_entry : object.get("Predmet").getAsJsonObject().entrySet()) {
+                                        allPredmets.put(p_entry.getKey(), p_entry.getValue().getAsString());
+                                    }
+                                    students.add(new BaseStudentBean(name, allPredmets, id));
+                                }
+                                dManager.AddList(students, BaseStudentBean.class);
+                                Intent i = new Intent(InputDataActivity.this, DetailInfoActivity.class);
+                                i.putExtra("mark", String.valueOf(id));
+                                startActivity(i);
+                            }
+                        });
                 break;
         }
     }

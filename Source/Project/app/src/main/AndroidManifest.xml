@@ -29,6 +29,10 @@
             android:name=".activities.InputDataActivity"
             android:label="@string/title_activity_input_data" >
         </activity>
+        <activity
+            android:name=".activities.DetailInfoActivity"
+            android:label="@string/title_activity_detail_info" >
+        </activity>
     </application>
 
 </manifest>

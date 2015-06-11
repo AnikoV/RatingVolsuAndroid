@@ -56,7 +56,7 @@ public class SemestrListFragment extends BaseListFragment implements IListItemCl
         SemestrBean[] data = new SemestrBean[mGroup.SemestrCount];
         int year = Integer.parseInt(mGroup.Year);
         for (int i = 0; i < data.length; i++) {
-            data[i] = new SemestrBean(String.format(getString(R.string.semestr_format_title), i + 1), String.format("%d - %d", year + i / 2, year + 1 + i / 2));
+            data[i] = new SemestrBean(String.format(getString(R.string.semestr_format_title), i + 1), String.format("%d - %d", year + i / 2, year + 1 + i / 2), i + 1);
         }
         mAdapter.setData(data);
     }
@@ -96,10 +96,12 @@ public class SemestrListFragment extends BaseListFragment implements IListItemCl
     public static class SemestrBean {
         public String title;
         public String subtitle;
+        public int count;
 
-        public SemestrBean(String title, String subtitle) {
+        public SemestrBean(String title, String subtitle, int count) {
             this.title = title;
             this.subtitle = subtitle;
+            this.count = count;
         }
     }
 }

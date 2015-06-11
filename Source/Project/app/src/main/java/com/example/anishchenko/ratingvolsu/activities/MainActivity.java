@@ -8,16 +8,24 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 
 import com.example.anishchenko.ratingvolsu.R;
+import com.example.anishchenko.ratingvolsu.beans.BasePredmetBean;
+import com.example.anishchenko.ratingvolsu.beans.BaseStudentBean;
+import com.example.anishchenko.ratingvolsu.beans.MarkBean;
+import com.example.anishchenko.ratingvolsu.db.DatabaseManager;
 import com.example.anishchenko.ratingvolsu.fragments.MainPageFragment;
+
+import java.util.ArrayList;
 
 public class MainActivity extends BaseSpiceActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DatabaseManager.INSTANCE.init(this);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
@@ -29,6 +37,8 @@ public class MainActivity extends BaseSpiceActivity {
         viewPager.setAdapter(new MainPagerAdapter(getSupportFragmentManager()));
         tablayout.setupWithViewPager(viewPager);
         tablayout.setTabGravity(TabLayout.GRAVITY_FILL);
+        ArrayList<BasePredmetBean> data = DatabaseManager.INSTANCE.getList(BasePredmetBean.class);
+        Log.i("a","a");
     }
 
     public void FobOnClick(View view) {
