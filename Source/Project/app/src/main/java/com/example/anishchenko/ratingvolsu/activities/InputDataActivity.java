@@ -25,7 +25,6 @@ import com.example.anishchenko.ratingvolsu.fragments.MainPageFragment;
 import com.example.anishchenko.ratingvolsu.fragments.SemestrListFragment;
 import com.example.anishchenko.ratingvolsu.fragments.StudentListFragment;
 import com.example.anishchenko.ratingvolsu.requests.GetRatingOfGroupRequest;
-import com.example.anishchenko.ratingvolsu.requests.GetRatingOfStudentRequest;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -96,7 +95,7 @@ public class InputDataActivity extends BaseSpiceActivity implements BaseListFrag
             case 3:
                 selectedStudent = (StudentBean) value;
                 //TODO show FAB
-                getSpiceManager().execute(new GetRatingOfStudentRequest(selectedFacultet.Id, selecteGroup.Id, String.valueOf(selectedSemesr.count), selectedStudent.Id),
+                getSpiceManager().execute(new GetRatingOfGroupRequest(selectedFacultet.Id, selecteGroup.Id, String.valueOf(selectedSemesr.count)),
                         new RequestListener<JsonElement>() {
                             @Override
                             public void onRequestFailure(SpiceException spiceException) {
