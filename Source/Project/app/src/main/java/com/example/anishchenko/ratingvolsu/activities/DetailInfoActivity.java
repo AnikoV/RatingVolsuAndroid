@@ -17,6 +17,8 @@ import com.example.anishchenko.ratingvolsu.fragments.GroupRatingFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.SortedMap;
 
 public class DetailInfoActivity extends BaseSpiceActivity implements BaseListFragment.IPageSelector {
 
@@ -59,7 +61,7 @@ public class DetailInfoActivity extends BaseSpiceActivity implements BaseListFra
             super(fm);
             this.markSet = markSet;
             if (data == null) {
-                this.data = new BaseStudentBean("", new HashMap<String, String>(), "");
+                this.data = new BaseStudentBean("", new LinkedHashMap<String, String>(), "", "");
             } else {
                 this.data = data;
             }

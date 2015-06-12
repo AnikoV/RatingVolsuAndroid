@@ -16,6 +16,7 @@ import com.example.anishchenko.ratingvolsu.beans.BasePredmetBean;
 import com.example.anishchenko.ratingvolsu.beans.BaseStudentBean;
 import com.example.anishchenko.ratingvolsu.beans.MarkBean;
 import com.example.anishchenko.ratingvolsu.db.DatabaseManager;
+import com.example.anishchenko.ratingvolsu.dialogs.LoadingDialog;
 import com.example.anishchenko.ratingvolsu.fragments.MainPageFragment;
 
 import java.util.ArrayList;
@@ -37,8 +38,8 @@ public class MainActivity extends BaseSpiceActivity {
         viewPager.setAdapter(new MainPagerAdapter(getSupportFragmentManager()));
         tablayout.setupWithViewPager(viewPager);
         tablayout.setTabGravity(TabLayout.GRAVITY_FILL);
-        ArrayList<BasePredmetBean> data = DatabaseManager.INSTANCE.getList(BasePredmetBean.class);
-        Log.i("a","a");
+        LoadingDialog d = new LoadingDialog();
+        d.show(getSupportFragmentManager(), "loading");
     }
 
     public void FobOnClick(View view) {

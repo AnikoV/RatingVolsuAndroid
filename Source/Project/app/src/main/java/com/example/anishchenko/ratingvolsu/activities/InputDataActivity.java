@@ -25,6 +25,7 @@ import com.example.anishchenko.ratingvolsu.fragments.MainPageFragment;
 import com.example.anishchenko.ratingvolsu.fragments.SemestrListFragment;
 import com.example.anishchenko.ratingvolsu.fragments.StudentListFragment;
 import com.example.anishchenko.ratingvolsu.requests.GetRatingOfGroupRequest;
+import com.example.anishchenko.ratingvolsu.requests.GetRatingOfStudentRequest;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -32,6 +33,7 @@ import com.octo.android.robospice.request.listener.RequestListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class InputDataActivity extends BaseSpiceActivity implements BaseListFragment.IPageSelector {
@@ -94,7 +96,7 @@ public class InputDataActivity extends BaseSpiceActivity implements BaseListFrag
             case 3:
                 selectedStudent = (StudentBean) value;
                 //TODO show FAB
-                getSpiceManager().execute(new GetRatingOfGroupRequest(selectedFacultet.Id, selecteGroup.Id, String.valueOf(selectedSemesr.count)),
+                getSpiceManager().execute(new GetRatingOfStudentRequest(selectedFacultet.Id, selecteGroup.Id, String.valueOf(selectedSemesr.count), selectedStudent.Id),
                         new RequestListener<JsonElement>() {
                             @Override
                             public void onRequestFailure(SpiceException spiceException) {
@@ -116,11 +118,11 @@ public class InputDataActivity extends BaseSpiceActivity implements BaseListFrag
                                 for (Map.Entry<String, JsonElement> entry : jsonElement.getAsJsonObject().get("Table").getAsJsonObject().entrySet()) {
                                     JsonObject object = entry.getValue().getAsJsonObject();
                                     String name = object.get("Name").getAsString();
-                                    HashMap<String, String> allPredmets = new HashMap<>();
+                                    LinkedHashMap<String, String> allPredmets = new LinkedHashMap<>();
                                     for (Map.Entry<String, JsonElement> p_entry : object.get("Predmet").getAsJsonObject().entrySet()) {
                                         allPredmets.put(p_entry.getKey(), p_entry.getValue().getAsString());
                                     }
-                                    students.add(new BaseStudentBean(name, allPredmets, id));
+                                    students.add(new BaseStudentBean(name, allPredmets, id, id + name));
                                 }
                                 dManager.AddList(students, BaseStudentBean.class);
                                 Intent i = new Intent(InputDataActivity.this, DetailInfoActivity.class);

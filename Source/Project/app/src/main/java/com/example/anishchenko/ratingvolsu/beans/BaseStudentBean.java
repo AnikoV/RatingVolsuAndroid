@@ -5,23 +5,25 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 @DatabaseTable
 public class BaseStudentBean {
 
     @DatabaseField
     public String Name;
-    @DatabaseField(generatedId = true)
-    public int id;
+    @DatabaseField(id = true)
+    public String id;
     @DatabaseField(dataType = DataType.SERIALIZABLE)
-    public HashMap<String, String> Predmet;
+    public LinkedHashMap<String, String> Predmet;
     @DatabaseField
     public String markId;
 
-    public BaseStudentBean(String name, HashMap<String, String> predmet, String markId) {
+    public BaseStudentBean(String name, LinkedHashMap<String, String> predmet, String markId, String id) {
         Name = name;
         Predmet = predmet;
         this.markId = markId;
+        this.id = id;
     }
 
     public BaseStudentBean() {
