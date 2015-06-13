@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.anishchenko.ratingvolsu.R;
 import com.example.anishchenko.ratingvolsu.activities.BaseSpiceActivity;
@@ -39,7 +40,7 @@ public class GroupListFragment extends BaseListFragment implements IListItemClic
         if (fakId != null && !fakId.equals(""))
             refreshList();
         else {
-            errorText.setVisibility(View.VISIBLE);
+            showSelectData();
             mAdapter.setData(new GroupBean[0]);
         }
     }
@@ -48,7 +49,7 @@ public class GroupListFragment extends BaseListFragment implements IListItemClic
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (fakId == null || fakId.equals("")) {
-            errorText.setVisibility(View.VISIBLE);
+            showSelectData();
             mAdapter.setData(new GroupBean[0]);
         }
     }
@@ -56,14 +57,21 @@ public class GroupListFragment extends BaseListFragment implements IListItemClic
     private void refreshList() {
         errorText.setVisibility(View.INVISIBLE);
         mAdapter.setData(new GroupBean[0]);
+        progressBar.setVisibility(View.VISIBLE);
         ((BaseSpiceActivity) getActivity()).getSpiceManager().execute(new GetGroupsRequest(fakId), new RequestListener<GroupBean[]>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
-
+                progressBar.setVisibility(View.INVISIBLE);
+                Toast.makeText(getActivity(), "Ошибка сервера", Toast.LENGTH_SHORT).show();
+                showNoData();
             }
 
             @Override
             public void onRequestSuccess(GroupBean[] facultBeans) {
+                progressBar.setVisibility(View.INVISIBLE);
+                if (facultBeans.length == 0) {
+                    showNoData();
+                }
                 mAdapter.setData(facultBeans);
             }
         });

@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.SparseArray;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.anishchenko.ratingvolsu.R;
 import com.example.anishchenko.ratingvolsu.beans.BasePredmetBean;
@@ -149,6 +150,7 @@ public class InputDataActivity extends BaseSpiceActivity implements BaseListFrag
                 new RequestListener<JsonElement>() {
                     @Override
                     public void onRequestFailure(SpiceException spiceException) {
+                        Toast.makeText(InputDataActivity.this, "Ошибка сервера", Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
                     }
 
@@ -156,13 +158,16 @@ public class InputDataActivity extends BaseSpiceActivity implements BaseListFrag
                     public void onRequestSuccess(JsonElement jsonElement) {
                         DatabaseManager dManager = DatabaseManager.INSTANCE;
                         ArrayList<BasePredmetBean> data = new ArrayList<>();
-                        if (jsonElement.getAsJsonObject().get("Predmet") == null)
+                        if (jsonElement.getAsJsonObject().get("Predmet").isJsonNull()) {
+                            Toast.makeText(InputDataActivity.this, "Ошибка сервера", Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
                             return;
+                        }
                         for (Map.Entry<String, JsonElement> entry : jsonElement.getAsJsonObject().get("Predmet").getAsJsonObject().entrySet()) {
                             JsonObject object = entry.getValue().getAsJsonObject();
                             data.add(new BasePredmetBean(object.get("Name").getAsString(), object.get("Type").getAsString(), entry.getKey()));
                         }
-                        String gropPrefix = selecteGroup.Name.replaceAll("\\d","");
+                        String gropPrefix = selecteGroup.Name.replaceAll("\\d", "");
                         dManager.AddList(data, BasePredmetBean.class);
                         String id = selectedFacultet.Id + selecteGroup.Id + selectedSemesr.title;
                         MarkBean markBean = new MarkBean(id);
@@ -177,7 +182,7 @@ public class InputDataActivity extends BaseSpiceActivity implements BaseListFrag
                         ArrayList<BaseStudentBean> students = new ArrayList<>();
                         for (Map.Entry<String, JsonElement> entry : jsonElement.getAsJsonObject().get("Table").getAsJsonObject().entrySet()) {
                             JsonObject object = entry.getValue().getAsJsonObject();
-                            String name = gropPrefix + object.get("Name").getAsString();
+                            String name = gropPrefix + object.get("Name").getAsString().replaceAll("\\D", "");
                             LinkedHashMap<String, String> allPredmets = new LinkedHashMap<>();
                             for (Map.Entry<String, JsonElement> p_entry : object.get("Predmet").getAsJsonObject().entrySet()) {
                                 allPredmets.put(p_entry.getKey(), p_entry.getValue().getAsString());
@@ -190,6 +195,7 @@ public class InputDataActivity extends BaseSpiceActivity implements BaseListFrag
                         i.putExtra("student", id + gropPrefix + selectedStudent.Number);
                         startActivity(i);
                         dialog.dismiss();
+                        finish();
                     }
                 });
     }

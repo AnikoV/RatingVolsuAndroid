@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.anishchenko.ratingvolsu.R;
@@ -20,6 +21,7 @@ public abstract class BaseListFragment extends Fragment {
     protected IPageSelector mListener;
     protected TextView errorText;
     protected RecyclerView recView;
+    protected ProgressBar progressBar;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -30,10 +32,21 @@ public abstract class BaseListFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        progressBar = (ProgressBar) view.findViewById(R.id.progress);
         errorText = (TextView) view.findViewById(R.id.error_text);
         recView = (RecyclerView) view.findViewById(R.id.recyclerview);
         recView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recView.setAdapter(getAdapter());
+    }
+
+    protected void showSelectData() {
+        errorText.setText("Пожалуйста, выберите информацию на предыдущей вкладке!");
+        errorText.setVisibility(View.VISIBLE);
+    }
+
+    protected void showNoData() {
+        errorText.setText("Нет данных");
+        errorText.setVisibility(View.VISIBLE);
     }
 
     public abstract RecyclerView.Adapter getAdapter();

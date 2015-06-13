@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.anishchenko.ratingvolsu.R;
 import com.example.anishchenko.ratingvolsu.activities.BaseSpiceActivity;
@@ -34,23 +35,29 @@ public class InstituteListFragment extends BaseListFragment implements IListItem
         super.onAttach(activity);
         mAdapter = new InstituteListAdapter(activity, this);
         mListener = (IPageSelector) activity;
-        ((BaseSpiceActivity) getActivity()).getSpiceManager().execute(new GetFacultsRequest(), new RequestListener<FacultBean[]>() {
-            @Override
-            public void onRequestFailure(SpiceException spiceException) {
-
-            }
-
-            @Override
-            public void onRequestSuccess(FacultBean[] facultBeans) {
-                mAdapter.setData(facultBeans);
-            }
-        });
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        //TODO progress
+        progressBar.setVisibility(View.VISIBLE);
+        ((BaseSpiceActivity) getActivity()).getSpiceManager().execute(new GetFacultsRequest(), new RequestListener<FacultBean[]>() {
+            @Override
+            public void onRequestFailure(SpiceException spiceException) {
+                progressBar.setVisibility(View.INVISIBLE);
+                Toast.makeText(getActivity(), "Ошибка сервера", Toast.LENGTH_SHORT).show();
+                showNoData();
+            }
+
+            @Override
+            public void onRequestSuccess(FacultBean[] facultBeans) {
+                progressBar.setVisibility(View.INVISIBLE);
+                if (facultBeans.length == 0) {
+                    showNoData();
+                }
+                mAdapter.setData(facultBeans);
+            }
+        });
     }
 
     @Override

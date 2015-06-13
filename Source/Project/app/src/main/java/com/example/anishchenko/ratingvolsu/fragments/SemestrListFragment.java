@@ -35,7 +35,7 @@ public class SemestrListFragment extends BaseListFragment implements IListItemCl
         if (mGroup != null)
             refreshList();
         else {
-            errorText.setVisibility(View.VISIBLE);
+            showSelectData();
             mAdapter.setData(new SemestrBean[0]);
         }
     }
@@ -44,7 +44,7 @@ public class SemestrListFragment extends BaseListFragment implements IListItemCl
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (mGroup == null) {
-            errorText.setVisibility(View.VISIBLE);
+            showSelectData();
             mAdapter.setData(new SemestrBean[0]);
         }
     }

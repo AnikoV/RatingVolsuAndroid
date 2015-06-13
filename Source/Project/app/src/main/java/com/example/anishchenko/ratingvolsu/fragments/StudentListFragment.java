@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.anishchenko.ratingvolsu.R;
 import com.example.anishchenko.ratingvolsu.activities.BaseSpiceActivity;
@@ -55,7 +56,7 @@ public class StudentListFragment extends BaseListFragment implements IListItemCl
         if (mGroup != null)
             refreshList();
         else {
-            errorText.setVisibility(View.VISIBLE);
+            showSelectData();
             mAdapter.setData(new StudentBean[0]);
         }
     }
@@ -64,7 +65,7 @@ public class StudentListFragment extends BaseListFragment implements IListItemCl
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (mGroup == null) {
-            errorText.setVisibility(View.VISIBLE);
+            showSelectData();
             mAdapter.setData(new StudentBean[0]);
         }
     }
@@ -73,14 +74,21 @@ public class StudentListFragment extends BaseListFragment implements IListItemCl
         if (mAdapter != null) {
             errorText.setVisibility(View.INVISIBLE);
             mAdapter.setData(new StudentBean[0]);
+            progressBar.setVisibility(View.VISIBLE);
             ((BaseSpiceActivity) getActivity()).getSpiceManager().execute(new GetStudentListRequest(mGroup.Id), new RequestListener<StudentBean[]>() {
                 @Override
                 public void onRequestFailure(SpiceException spiceException) {
-
+                    progressBar.setVisibility(View.INVISIBLE);
+                    Toast.makeText(getActivity(), "Ошибка сервера", Toast.LENGTH_SHORT).show();
+                    showNoData();
                 }
 
                 @Override
                 public void onRequestSuccess(StudentBean[] facultBeans) {
+                    progressBar.setVisibility(View.INVISIBLE);
+                    if (facultBeans.length == 0) {
+                        showNoData();
+                    }
                     mAdapter.setData(facultBeans);
                 }
             });
