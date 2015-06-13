@@ -14,6 +14,7 @@ public abstract class BaseRecyclerViewAdapter<T, H extends BaseRecyclerViewAdapt
     protected T[] mData;
     private LayoutInflater mInflater;
     private IListItemClick mListener;
+    protected int selectedPosition = -1;
 
     public BaseRecyclerViewAdapter(Context context, IListItemClick listener) {
         mListener = listener;
@@ -30,7 +31,16 @@ public abstract class BaseRecyclerViewAdapter<T, H extends BaseRecyclerViewAdapt
     @Override
     public final void onBindViewHolder(BaseViewHolder holder, int position) {
         holder.setPosition(position);
+        if (position == selectedPosition)
+            holder.itemView.setSelected(true);
+        else
+            holder.itemView.setSelected(false);
         onBindHolder((H) holder, position);
+    }
+
+    public void setSelectedPosition(int pos) {
+        selectedPosition = pos;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -43,7 +53,10 @@ public abstract class BaseRecyclerViewAdapter<T, H extends BaseRecyclerViewAdapt
     }
 
     public void setData(T[] data) {
+        if(data == null)
+            return;
         mData = data.clone();
+        selectedPosition = -1;
         notifyDataSetChanged();
     }
 

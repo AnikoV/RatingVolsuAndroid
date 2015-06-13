@@ -8,20 +8,18 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.util.SparseArray;
 import android.view.View;
 
 import com.example.anishchenko.ratingvolsu.R;
-import com.example.anishchenko.ratingvolsu.beans.BasePredmetBean;
-import com.example.anishchenko.ratingvolsu.beans.BaseStudentBean;
 import com.example.anishchenko.ratingvolsu.beans.MarkBean;
 import com.example.anishchenko.ratingvolsu.db.DatabaseManager;
-import com.example.anishchenko.ratingvolsu.dialogs.LoadingDialog;
+import com.example.anishchenko.ratingvolsu.fragments.BaseListFragment;
 import com.example.anishchenko.ratingvolsu.fragments.MainPageFragment;
 
-import java.util.ArrayList;
+public class MainActivity extends BaseSpiceActivity implements BaseListFragment.IPageSelector {
 
-public class MainActivity extends BaseSpiceActivity {
+    private MainPagerAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,18 +33,35 @@ public class MainActivity extends BaseSpiceActivity {
         getSupportActionBar().setTitle(R.string.main_title);
         TabLayout tablayout = (TabLayout) findViewById(R.id.tablayout);
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        viewPager.setAdapter(new MainPagerAdapter(getSupportFragmentManager()));
+        mAdapter = new MainPagerAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(mAdapter);
         tablayout.setupWithViewPager(viewPager);
         tablayout.setTabGravity(TabLayout.GRAVITY_FILL);
-        LoadingDialog d = new LoadingDialog();
-        d.show(getSupportFragmentManager(), "loading");
+    }
+
+    protected void onResume() {
+        super.onResume();
+        if (mAdapter.registeredFragments.get(0) != null)
+            mAdapter.registeredFragments.get(0).updateData();
+        if (mAdapter.registeredFragments.get(1) != null)
+            mAdapter.registeredFragments.get(1).updateData();
     }
 
     public void FobOnClick(View view) {
         startActivity(new Intent(this, InputDataActivity.class));
     }
 
+    @Override
+    public void onItemSelected(int type, Object value) {
+        Intent i = new Intent(this, DetailInfoActivity.class);
+        MarkBean b = (MarkBean) value;
+        i.putExtra("mark", b.getId());
+        i.putExtra("student", b.getSavedStudent());
+        startActivity(i);
+    }
+
     private class MainPagerAdapter extends FragmentPagerAdapter {
+        SparseArray<MainPageFragment> registeredFragments = new SparseArray<>();
 
         public MainPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -54,7 +69,10 @@ public class MainActivity extends BaseSpiceActivity {
 
         @Override
         public Fragment getItem(int position) {
-            return new MainPageFragment();
+            MainPageFragment f = new MainPageFragment();
+            f.setIsFavorite(position == 0);
+            registeredFragments.append(position, f);
+            return f;
         }
 
         @Override

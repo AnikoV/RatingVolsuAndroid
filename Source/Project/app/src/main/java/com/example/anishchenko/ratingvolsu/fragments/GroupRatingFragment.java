@@ -2,10 +2,12 @@ package com.example.anishchenko.ratingvolsu.fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.anishchenko.ratingvolsu.R;
@@ -13,8 +15,13 @@ import com.example.anishchenko.ratingvolsu.beans.BaseStudentBean;
 import com.example.anishchenko.ratingvolsu.db.DatabaseManager;
 import com.example.anishchenko.ratingvolsu.utils.BaseRecyclerViewAdapter;
 import com.example.anishchenko.ratingvolsu.utils.IListItemClick;
+import com.example.anishchenko.ratingvolsu.utils.ToolBox;
+import com.melnykov.fab.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Map;
 
 /**
  * Created by m00n on 11.06.2015.
@@ -24,6 +31,7 @@ public class GroupRatingFragment extends BaseListFragment implements IListItemCl
     private GroupAdapterRating mAdapter;
     private BaseStudentBean[] array;
     private String type;
+    private FloatingActionButton fab;
 
     @Override
     public void onAttach(Activity activity) {
@@ -35,12 +43,42 @@ public class GroupRatingFragment extends BaseListFragment implements IListItemCl
     }
 
     @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        fab.attachToRecyclerView(recView);
+    }
+
+    public void setFAB(FloatingActionButton fab) {
+        this.fab = fab;
+    }
+
+    @Override
     public RecyclerView.Adapter getAdapter() {
         return mAdapter;
     }
 
-    public void setData(String type, String mark_set) {
+    public void setData(final String type, String mark_set) {
         ArrayList<BaseStudentBean> students = DatabaseManager.INSTANCE.getStudentList(mark_set);
+        Collections.sort(students, new Comparator<BaseStudentBean>() {
+            @Override
+            public int compare(BaseStudentBean lhs, BaseStudentBean rhs) {
+                int f, s;
+                if (type.equals("all")) {
+                    f = 0;
+                    s = 0;
+                    for (Map.Entry<String, String> enty : lhs.Predmet.entrySet()) {
+                        f += Integer.parseInt(enty.getValue().replaceAll("\\(.+?\\)", ""));
+                    }
+                    for (Map.Entry<String, String> enty : rhs.Predmet.entrySet()) {
+                        s += Integer.parseInt(enty.getValue().replaceAll("\\(.+?\\)", ""));
+                    }
+                } else {
+                    f = Integer.parseInt(lhs.Predmet.get(type).replaceAll("\\(.+?\\)", ""));
+                    s = Integer.parseInt(rhs.Predmet.get(type).replaceAll("\\(.+?\\)", ""));
+                }
+                return s - f;
+            }
+        });
         array = students.toArray(new BaseStudentBean[students.size()]);
         this.type = type;
     }
@@ -66,6 +104,16 @@ public class GroupRatingFragment extends BaseListFragment implements IListItemCl
         @Override
         public GroupViewHolder getHolder(LayoutInflater inflater, ViewGroup parent, int viewType) {
             View v = inflater.inflate(R.layout.item_group_rating_layout, parent, false);
+            RecyclerView.LayoutParams p = (RecyclerView.LayoutParams) v.getLayoutParams();
+            int margin = ToolBox.convertDpToPixel(15, inflater.getContext());
+            if (viewType == 0) {
+                p.setMargins(margin, margin, margin, 0);
+            } else if (viewType == 1) {
+                p.setMargins(margin, 0, margin, margin);
+            } else {
+                p.setMargins(margin, 0, margin, 0);
+            }
+            v.setLayoutParams(p);
             return new GroupViewHolder(v);
         }
 
@@ -74,8 +122,28 @@ public class GroupRatingFragment extends BaseListFragment implements IListItemCl
             BaseStudentBean bean = mData[position];
             holder.number.setText(String.format("#%d", position + 1));
             holder.student.setText(bean.Name);
-            holder.mark.setText(bean.Predmet.get(type));
+            if (type.equals("all")) {
+                int sum = 0;
+                for (Map.Entry<String, String> enty : bean.Predmet.entrySet()) {
+                    sum += Integer.parseInt(enty.getValue().replaceAll("\\(.+?\\)", ""));
+                }
+                holder.mark.setText(String.valueOf(sum));
+                return;
+            }
+            holder.mark.setText(bean.Predmet.get(type).replaceAll("\\(.+?\\)", ""));
         }
+
+        @Override
+        public int getItemViewType(int position) {
+            if (position == 0) {
+                return 0;
+            } else if (position == mData.length - 1) {
+                return 1;
+            } else {
+                return 2;
+            }
+        }
+
     }
 
     public static class GroupViewHolder extends BaseRecyclerViewAdapter.BaseViewHolder {

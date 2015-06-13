@@ -4,7 +4,6 @@ import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 @DatabaseTable
@@ -16,6 +15,8 @@ public class BaseStudentBean {
     public String id;
     @DatabaseField(dataType = DataType.SERIALIZABLE)
     public LinkedHashMap<String, String> Predmet;
+    @DatabaseField(dataType = DataType.SERIALIZABLE)
+    public LinkedHashMap<String, String[]> all_marks;
     @DatabaseField
     public String markId;
 

@@ -16,6 +16,7 @@ import com.example.anishchenko.ratingvolsu.beans.StudentBean;
 import com.example.anishchenko.ratingvolsu.requests.GetStudentListRequest;
 import com.example.anishchenko.ratingvolsu.utils.BaseRecyclerViewAdapter;
 import com.example.anishchenko.ratingvolsu.utils.IListItemClick;
+import com.example.anishchenko.ratingvolsu.utils.ToolBox;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 
@@ -41,23 +42,31 @@ public class StudentListFragment extends BaseListFragment implements IListItemCl
     @Override
     public void onItemClick(View v, int position) {
         mListener.onItemSelected(3, mAdapter.getData()[position]);
+        mAdapter.setSelectedPosition(position);
     }
 
     public void setGroup(GroupBean bean) {
         this.mGroup = bean;
         if (mGroup != null)
             refreshList();
+        else {
+            errorText.setVisibility(View.VISIBLE);
+            mAdapter.setData(new StudentBean[0]);
+        }
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (mGroup != null)
-            refreshList();
+        if (mGroup == null) {
+            errorText.setVisibility(View.VISIBLE);
+            mAdapter.setData(new StudentBean[0]);
+        }
     }
 
     private void refreshList() {
         if (mAdapter != null) {
+            errorText.setVisibility(View.INVISIBLE);
             mAdapter.setData(new StudentBean[0]);
             ((BaseSpiceActivity) getActivity()).getSpiceManager().execute(new GetStudentListRequest(mGroup.Id), new RequestListener<StudentBean[]>() {
                 @Override
@@ -82,6 +91,16 @@ public class StudentListFragment extends BaseListFragment implements IListItemCl
         @Override
         public ItemViewHolder getHolder(LayoutInflater inflater, ViewGroup parent, int viewType) {
             View v = inflater.inflate(R.layout.facultet_item, parent, false);
+            RecyclerView.LayoutParams p = (RecyclerView.LayoutParams) v.getLayoutParams();
+            int margin = ToolBox.convertDpToPixel(15, inflater.getContext());
+            if (viewType == 0) {
+                p.setMargins(margin, margin, margin, 0);
+            } else if (viewType == 1) {
+                p.setMargins(margin, 0, margin, margin);
+            } else {
+                p.setMargins(margin, 0, margin, 0);
+            }
+            v.setLayoutParams(p);
             return new ItemViewHolder(v);
         }
 
@@ -90,6 +109,17 @@ public class StudentListFragment extends BaseListFragment implements IListItemCl
             StudentBean bean = mData[position];
             holder.title.setText(bean.Number.replaceAll("\\D+", ""));
             holder.subtitle.setVisibility(View.GONE);
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            if (position == 0) {
+                return 0;
+            } else if (position == mData.length - 1) {
+                return 1;
+            } else {
+                return 2;
+            }
         }
     }
 

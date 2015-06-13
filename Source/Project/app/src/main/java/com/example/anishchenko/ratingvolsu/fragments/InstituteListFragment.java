@@ -15,6 +15,7 @@ import com.example.anishchenko.ratingvolsu.beans.FacultBean;
 import com.example.anishchenko.ratingvolsu.requests.GetFacultsRequest;
 import com.example.anishchenko.ratingvolsu.utils.BaseRecyclerViewAdapter;
 import com.example.anishchenko.ratingvolsu.utils.IListItemClick;
+import com.example.anishchenko.ratingvolsu.utils.ToolBox;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 
@@ -33,11 +34,6 @@ public class InstituteListFragment extends BaseListFragment implements IListItem
         super.onAttach(activity);
         mAdapter = new InstituteListAdapter(activity, this);
         mListener = (IPageSelector) activity;
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
         ((BaseSpiceActivity) getActivity()).getSpiceManager().execute(new GetFacultsRequest(), new RequestListener<FacultBean[]>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
@@ -52,6 +48,12 @@ public class InstituteListFragment extends BaseListFragment implements IListItem
     }
 
     @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        //TODO progress
+    }
+
+    @Override
     public RecyclerView.Adapter getAdapter() {
         return mAdapter;
     }
@@ -59,6 +61,7 @@ public class InstituteListFragment extends BaseListFragment implements IListItem
     @Override
     public void onItemClick(View v, int position) {
         mListener.onItemSelected(0, mAdapter.getData()[position]);
+        mAdapter.setSelectedPosition(position);
     }
 
     public static class InstituteListAdapter extends BaseRecyclerViewAdapter<FacultBean, ItemViewHolder> {
@@ -73,6 +76,16 @@ public class InstituteListFragment extends BaseListFragment implements IListItem
         @Override
         public ItemViewHolder getHolder(LayoutInflater inflater, ViewGroup parent, int viewType) {
             View v = inflater.inflate(R.layout.facultet_item, parent, false);
+            RecyclerView.LayoutParams p = (RecyclerView.LayoutParams) v.getLayoutParams();
+            int margin = ToolBox.convertDpToPixel(15, inflater.getContext());
+            if (viewType == 0) {
+                p.setMargins(margin, margin, margin, 0);
+            } else if (viewType == 1) {
+                p.setMargins(margin, 0, margin, margin);
+            } else {
+                p.setMargins(margin, 0, margin, 0);
+            }
+            v.setLayoutParams(p);
             return new ItemViewHolder(v);
         }
 
@@ -83,6 +96,17 @@ public class InstituteListFragment extends BaseListFragment implements IListItem
             if (m.find()) {
                 holder.title.setText(m.group(1));
                 holder.subtitle.setText(m.group(2));
+            }
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            if (position == 0) {
+                return 0;
+            } else if (position == mData.length - 1) {
+                return 1;
+            } else {
+                return 2;
             }
         }
 

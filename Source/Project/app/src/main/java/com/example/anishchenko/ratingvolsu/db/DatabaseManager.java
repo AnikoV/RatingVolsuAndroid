@@ -3,6 +3,7 @@ package com.example.anishchenko.ratingvolsu.db;
 import android.content.Context;
 
 import com.example.anishchenko.ratingvolsu.beans.BaseStudentBean;
+import com.example.anishchenko.ratingvolsu.beans.MarkBean;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.QueryBuilder;
 
@@ -84,6 +85,17 @@ public enum DatabaseManager {
             QueryBuilder<BaseStudentBean, Integer> builer = dao.queryBuilder();
             builer.where().eq("markId", mark_set);
             return (ArrayList<BaseStudentBean>) builer.query();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public ArrayList<MarkBean> getMarkList(boolean isFav) {
+        try {
+            Dao<MarkBean, Integer> dao = mInnerDBHelper.getDao(MarkBean.class);
+            QueryBuilder<MarkBean, Integer> builer = dao.queryBuilder();
+            builer.where().eq("isFavorite", isFav);
+            return (ArrayList<MarkBean>) builer.query();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

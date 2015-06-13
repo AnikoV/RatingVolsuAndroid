@@ -13,6 +13,7 @@ import com.example.anishchenko.ratingvolsu.R;
 import com.example.anishchenko.ratingvolsu.beans.GroupBean;
 import com.example.anishchenko.ratingvolsu.utils.BaseRecyclerViewAdapter;
 import com.example.anishchenko.ratingvolsu.utils.IListItemClick;
+import com.example.anishchenko.ratingvolsu.utils.ToolBox;
 
 /**
  * Created by m00n on 10.06.2015.
@@ -33,13 +34,19 @@ public class SemestrListFragment extends BaseListFragment implements IListItemCl
         mGroup = bean;
         if (mGroup != null)
             refreshList();
+        else {
+            errorText.setVisibility(View.VISIBLE);
+            mAdapter.setData(new SemestrBean[0]);
+        }
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (mGroup != null)
-            refreshList();
+        if (mGroup == null) {
+            errorText.setVisibility(View.VISIBLE);
+            mAdapter.setData(new SemestrBean[0]);
+        }
     }
 
     @Override
@@ -50,9 +57,11 @@ public class SemestrListFragment extends BaseListFragment implements IListItemCl
     @Override
     public void onItemClick(View v, int position) {
         mListener.onItemSelected(2, mAdapter.getData()[position]);
+        mAdapter.setSelectedPosition(position);
     }
 
     private void refreshList() {
+        errorText.setVisibility(View.INVISIBLE);
         SemestrBean[] data = new SemestrBean[mGroup.SemestrCount];
         int year = Integer.parseInt(mGroup.Year);
         for (int i = 0; i < data.length; i++) {
@@ -70,6 +79,16 @@ public class SemestrListFragment extends BaseListFragment implements IListItemCl
         @Override
         public ItemViewHolder getHolder(LayoutInflater inflater, ViewGroup parent, int viewType) {
             View v = inflater.inflate(R.layout.facultet_item, parent, false);
+            RecyclerView.LayoutParams p = (RecyclerView.LayoutParams) v.getLayoutParams();
+            int margin = ToolBox.convertDpToPixel(15, inflater.getContext());
+            if (viewType == 0) {
+                p.setMargins(margin, margin, margin, 0);
+            } else if (viewType == 1) {
+                p.setMargins(margin, 0, margin, margin);
+            } else {
+                p.setMargins(margin, 0, margin, 0);
+            }
+            v.setLayoutParams(p);
             return new ItemViewHolder(v);
         }
 
@@ -78,6 +97,17 @@ public class SemestrListFragment extends BaseListFragment implements IListItemCl
             SemestrBean bean = mData[position];
             holder.title.setText(bean.title);
             holder.subtitle.setText(bean.subtitle);
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            if (position == 0) {
+                return 0;
+            } else if (position == mData.length - 1) {
+                return 1;
+            } else {
+                return 2;
+            }
         }
     }
 

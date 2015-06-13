@@ -16,4 +16,6 @@
     <string name="tab_title_sem">Семестр</string>
     <string name="semestr_format_title">%d семестр</string>
     <string name="title_activity_detail_info">DetailInfoActivity</string>
+    <string name="data_loading_text">Загрузка данных...</string>
+    <string name="title_activity_detailed_student_rating">DetailedStudentRatingActivity</string>
 </resources>
