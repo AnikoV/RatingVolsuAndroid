@@ -80,6 +80,11 @@ public class GroupListFragment extends BaseListFragment implements IListItemClic
         mAdapter.setSelectedPosition(position);
     }
 
+    @Override
+    public void onLongItemClick(View v, int position) {
+
+    }
+
     public static class GroupListAdapter extends BaseRecyclerViewAdapter<GroupBean, ItemViewHolder> {
 
 

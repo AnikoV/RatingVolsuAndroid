@@ -4,7 +4,7 @@
     tools:context="com.example.anishchenko.ratingvolsu.activities.DetailInfoActivity">
     <item
         android:id="@+id/show_person"
-        android:icon="@drawable/abc_ic_menu_paste_mtrl_am_alpha"
+        android:icon="@drawable/ic_account_white_36dp"
         android:title="Информация о студенте"
         app:showAsAction="always" />
 </menu>

@@ -70,7 +70,7 @@ public class MainActivity extends BaseSpiceActivity implements BaseListFragment.
         @Override
         public Fragment getItem(int position) {
             MainPageFragment f = new MainPageFragment();
-            f.setIsFavorite(position == 0);
+            f.setIsFavorite(position == 1);
             registeredFragments.append(position, f);
             return f;
         }
@@ -83,9 +83,9 @@ public class MainActivity extends BaseSpiceActivity implements BaseListFragment.
         @Override
         public CharSequence getPageTitle(int position) {
             switch (position) {
-                case 0:
-                    return getString(R.string.tab_title_favorite);
                 case 1:
+                    return getString(R.string.tab_title_favorite);
+                case 0:
                 default:
                     return getString(R.string.tab_title_last);
             }

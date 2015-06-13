@@ -88,6 +88,11 @@ public class GroupRatingFragment extends BaseListFragment implements IListItemCl
 
     }
 
+    @Override
+    public void onLongItemClick(View v, int position) {
+
+    }
+
     public static class GroupAdapterRating extends BaseRecyclerViewAdapter<BaseStudentBean, GroupViewHolder> {
 
         private String type;

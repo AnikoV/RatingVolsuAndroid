@@ -66,6 +66,7 @@ public class DetailInfoActivity extends BaseSpiceActivity implements BaseListFra
                 public void onClick(View v) {
                     mark.setIsFavorite(true);
                     DatabaseManager.INSTANCE.addObject(mark, MarkBean.class);
+                    fab.hide(true);
                 }
             });
         }
@@ -85,6 +86,11 @@ public class DetailInfoActivity extends BaseSpiceActivity implements BaseListFra
             Intent i = new Intent(this, DetailedStudentRatingActivity.class);
             i.putExtra("student_id", getIntent().getExtras().getString("student"));
             startActivity(i);
+            return true;
+        }
+        else if(id == android.R.id.home)
+        {
+            finish();
             return true;
         }
 

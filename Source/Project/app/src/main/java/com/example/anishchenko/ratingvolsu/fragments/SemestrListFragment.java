@@ -60,6 +60,11 @@ public class SemestrListFragment extends BaseListFragment implements IListItemCl
         mAdapter.setSelectedPosition(position);
     }
 
+    @Override
+    public void onLongItemClick(View v, int position) {
+
+    }
+
     private void refreshList() {
         errorText.setVisibility(View.INVISIBLE);
         SemestrBean[] data = new SemestrBean[mGroup.SemestrCount];

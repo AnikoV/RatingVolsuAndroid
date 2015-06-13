@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
         android:layout_margin="16dp"
-        android:src="@drawable/abc_ic_menu_copy_mtrl_am_alpha"
+        android:src="@drawable/ic_star_white_36dp"
         fab:fab_colorNormal="@color/primary"
         fab:fab_colorPressed="@color/primary_pressed"
         fab:fab_colorRipple="@color/ripple" />

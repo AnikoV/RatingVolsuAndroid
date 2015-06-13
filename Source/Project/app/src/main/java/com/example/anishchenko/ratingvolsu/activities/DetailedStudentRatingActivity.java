@@ -7,9 +7,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.anishchenko.ratingvolsu.R;
 import com.example.anishchenko.ratingvolsu.beans.BasePredmetBean;
@@ -43,6 +45,7 @@ public class DetailedStudentRatingActivity extends BaseSpiceActivity implements 
         if (toolbar != null) {
             setSupportActionBar(toolbar);
         }
+        Toast.makeText(this, getString(R.string.tip_rotate_device), Toast.LENGTH_SHORT).show();
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Рейтинг студента");
@@ -112,6 +115,21 @@ public class DetailedStudentRatingActivity extends BaseSpiceActivity implements 
     public void onItemClick(View v, int position) {
 
     }
+
+    @Override
+    public void onLongItemClick(View v, int position) {
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            finish();
+        }
+        return true;
+    }
+
 
     public static class LocalMarkBean {
         private String predmetName;

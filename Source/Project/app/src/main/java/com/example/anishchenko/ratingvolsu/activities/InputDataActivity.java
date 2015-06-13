@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.util.SparseArray;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.example.anishchenko.ratingvolsu.R;
@@ -71,6 +72,15 @@ public class InputDataActivity extends BaseSpiceActivity implements BaseListFrag
         tablayout.setupWithViewPager(viewPager);
         tablayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tablayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            finish();
+        }
+        return true;
     }
 
     @Override
@@ -152,6 +162,7 @@ public class InputDataActivity extends BaseSpiceActivity implements BaseListFrag
                             JsonObject object = entry.getValue().getAsJsonObject();
                             data.add(new BasePredmetBean(object.get("Name").getAsString(), object.get("Type").getAsString(), entry.getKey()));
                         }
+                        String gropPrefix = selecteGroup.Name.replaceAll("\\d","");
                         dManager.AddList(data, BasePredmetBean.class);
                         String id = selectedFacultet.Id + selecteGroup.Id + selectedSemesr.title;
                         MarkBean markBean = new MarkBean(id);
@@ -161,12 +172,12 @@ public class InputDataActivity extends BaseSpiceActivity implements BaseListFrag
                         markBean.setSelectedStudent(selectedStudent.Id);
                         markBean.setTitile("Студент " + selectedStudent.Number);
                         markBean.setSubtitle(selecteGroup.Name + " " + selectedSemesr.title);
-                        markBean.setSavedStudent(id + selectedStudent.Number);
+                        markBean.setSavedStudent(id + gropPrefix + selectedStudent.Number);
                         dManager.addObject(markBean, MarkBean.class);
                         ArrayList<BaseStudentBean> students = new ArrayList<>();
                         for (Map.Entry<String, JsonElement> entry : jsonElement.getAsJsonObject().get("Table").getAsJsonObject().entrySet()) {
                             JsonObject object = entry.getValue().getAsJsonObject();
-                            String name = object.get("Name").getAsString();
+                            String name = gropPrefix + object.get("Name").getAsString();
                             LinkedHashMap<String, String> allPredmets = new LinkedHashMap<>();
                             for (Map.Entry<String, JsonElement> p_entry : object.get("Predmet").getAsJsonObject().entrySet()) {
                                 allPredmets.put(p_entry.getKey(), p_entry.getValue().getAsString());
@@ -176,7 +187,7 @@ public class InputDataActivity extends BaseSpiceActivity implements BaseListFrag
                         dManager.AddList(students, BaseStudentBean.class);
                         Intent i = new Intent(InputDataActivity.this, DetailInfoActivity.class);
                         i.putExtra("mark", String.valueOf(id));
-                        i.putExtra("student", id + selectedStudent.Number);
+                        i.putExtra("student", id + gropPrefix + selectedStudent.Number);
                         startActivity(i);
                         dialog.dismiss();
                     }

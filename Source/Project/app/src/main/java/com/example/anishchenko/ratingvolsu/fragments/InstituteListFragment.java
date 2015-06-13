@@ -64,6 +64,11 @@ public class InstituteListFragment extends BaseListFragment implements IListItem
         mAdapter.setSelectedPosition(position);
     }
 
+    @Override
+    public void onLongItemClick(View v, int position) {
+
+    }
+
     public static class InstituteListAdapter extends BaseRecyclerViewAdapter<FacultBean, ItemViewHolder> {
         private final Pattern pattern;
 

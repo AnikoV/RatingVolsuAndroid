@@ -53,7 +53,7 @@ public abstract class BaseRecyclerViewAdapter<T, H extends BaseRecyclerViewAdapt
     }
 
     public void setData(T[] data) {
-        if(data == null)
+        if (data == null)
             return;
         mData = data.clone();
         selectedPosition = -1;
@@ -64,13 +64,14 @@ public abstract class BaseRecyclerViewAdapter<T, H extends BaseRecyclerViewAdapt
 
     public abstract void onBindHolder(H holder, int position);
 
-    public abstract static class BaseViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public abstract static class BaseViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         protected IListItemClick mListener;
         private int position;
 
         public BaseViewHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
         }
 
         public void setPosition(int pos) {
@@ -84,6 +85,12 @@ public abstract class BaseRecyclerViewAdapter<T, H extends BaseRecyclerViewAdapt
         @Override
         public void onClick(View view) {
             mListener.onItemClick(view, position);
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+            mListener.onLongItemClick(v, position);
+            return true;
         }
     }
 }

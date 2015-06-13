@@ -3,8 +3,10 @@ package com.example.anishchenko.ratingvolsu.fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,6 +51,7 @@ public class MainPageFragment extends BaseListFragment implements IListItemClick
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        errorText.setText("у Вас нет записей");
         updateData();
     }
 
@@ -56,12 +59,43 @@ public class MainPageFragment extends BaseListFragment implements IListItemClick
         if (mAdapter != null) {
             ArrayList<MarkBean> data = DatabaseManager.INSTANCE.getMarkList(isFavorite);
             mAdapter.setData(data.toArray(new MarkBean[data.size()]));
+            if (mAdapter.getData().length == 0)
+                errorText.setVisibility(View.VISIBLE);
+            else
+                errorText.setVisibility(View.INVISIBLE);
         }
     }
 
     @Override
     public void onItemClick(View v, int position) {
         mListener.onItemSelected(0, mAdapter.getData()[position]);
+    }
+
+    @Override
+    public void onLongItemClick(View v, final int position) {
+        if (isFavorite) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("Удалить из избранного?");
+            builder.setMessage("Удалить запись из избранного списка");
+            builder.setCancelable(true);
+            builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() { // Кнопка ОК
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    MarkBean mark = DatabaseManager.INSTANCE.getObject(mAdapter.getData()[position].getId(), MarkBean.class);
+                    mark.setIsFavorite(false);
+                    DatabaseManager.INSTANCE.addObject(mark, MarkBean.class);
+                    updateData();
+                    dialog.dismiss(); // Отпускает диалоговое окно
+                }
+            });
+            builder.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() { // Кнопка ОК
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss(); // Отпускает диалоговое окно
+                }
+            });
+            builder.create().show();
+        }
     }
 
     public static class SavedListAdapter extends BaseRecyclerViewAdapter<MarkBean, ItemViewHolder> {

@@ -45,6 +45,11 @@ public class StudentListFragment extends BaseListFragment implements IListItemCl
         mAdapter.setSelectedPosition(position);
     }
 
+    @Override
+    public void onLongItemClick(View v, int position) {
+
+    }
+
     public void setGroup(GroupBean bean) {
         this.mGroup = bean;
         if (mGroup != null)
