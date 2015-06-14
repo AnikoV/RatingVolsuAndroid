@@ -177,7 +177,7 @@ public class InputDataActivity extends BaseSpiceActivity implements BaseListFrag
                         markBean.setSelectedStudent(selectedStudent.Id);
                         markBean.setTitile("Студент " + selectedStudent.Number);
                         markBean.setSubtitle(selecteGroup.Name + " " + selectedSemesr.title);
-                        markBean.setSavedStudent(id + gropPrefix + selectedStudent.Number);
+                        markBean.setSavedStudent(id + gropPrefix + selectedStudent.Number.replaceAll("\\D", ""));
                         dManager.addObject(markBean, MarkBean.class);
                         ArrayList<BaseStudentBean> students = new ArrayList<>();
                         for (Map.Entry<String, JsonElement> entry : jsonElement.getAsJsonObject().get("Table").getAsJsonObject().entrySet()) {
@@ -192,7 +192,7 @@ public class InputDataActivity extends BaseSpiceActivity implements BaseListFrag
                         dManager.AddList(students, BaseStudentBean.class);
                         Intent i = new Intent(InputDataActivity.this, DetailInfoActivity.class);
                         i.putExtra("mark", String.valueOf(id));
-                        i.putExtra("student", id + gropPrefix + selectedStudent.Number);
+                        i.putExtra("student", markBean.getSavedStudent());
                         startActivity(i);
                         dialog.dismiss();
                         finish();

@@ -8,12 +8,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.anishchenko.ratingvolsu.R;
+import com.example.anishchenko.ratingvolsu.activities.BaseSpiceActivity;
 import com.example.anishchenko.ratingvolsu.beans.GroupBean;
+import com.example.anishchenko.ratingvolsu.requests.GetGroupsRequest;
+import com.example.anishchenko.ratingvolsu.requests.GetSemestrListRequest;
 import com.example.anishchenko.ratingvolsu.utils.BaseRecyclerViewAdapter;
 import com.example.anishchenko.ratingvolsu.utils.IListItemClick;
 import com.example.anishchenko.ratingvolsu.utils.ToolBox;
+import com.google.gson.JsonElement;
+import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.octo.android.robospice.request.listener.RequestListener;
 
 /**
  * Created by m00n on 10.06.2015.
@@ -67,12 +74,38 @@ public class SemestrListFragment extends BaseListFragment implements IListItemCl
 
     private void refreshList() {
         errorText.setVisibility(View.INVISIBLE);
-        SemestrBean[] data = new SemestrBean[mGroup.SemestrCount];
-        int year = Integer.parseInt(mGroup.Year);
-        for (int i = 0; i < data.length; i++) {
-            data[i] = new SemestrBean(String.format(getString(R.string.semestr_format_title), i + 1), String.format("%d - %d", year + i / 2, year + 1 + i / 2), i + 1);
+        ((BaseSpiceActivity) getActivity()).getSpiceManager().execute(new GetSemestrListRequest(mGroup.Id), new RequestListener<JsonElement>() {
+            @Override
+            public void onRequestFailure(SpiceException spiceException) {
+                progressBar.setVisibility(View.INVISIBLE);
+                Toast.makeText(getActivity(), "Ошибка сервера", Toast.LENGTH_SHORT).show();
+                showNoData();
+            }
+
+            @Override
+            public void onRequestSuccess(JsonElement facultBeans) {
+                progressBar.setVisibility(View.INVISIBLE);
+                int count = facultBeans.getAsJsonArray().size();
+                SemestrBean[] data = new SemestrBean[count];
+                int year = Integer.parseInt(mGroup.Year);
+                for (int i = 0; i < data.length; i++) {
+                    data[i] = new SemestrBean(getRealSemestrNumber(i, mGroup.Type), String.format("%d - %d", year + (i + 1) / 2, year + 1 + (i + 1) / 2), i + 1);
+                }
+                mAdapter.setData(data);
+            }
+        });
+    }
+
+    private String getRealSemestrNumber(int number, String type) {
+        int pos = number;
+        if (type.equals("магистратура")) {
+            pos += 9;
         }
-        mAdapter.setData(data);
+        else
+        {
+            pos += 1;
+        }
+        return String.format(getString(R.string.semestr_format_title), pos);
     }
 
     public static class SemestrListAdapter extends BaseRecyclerViewAdapter<SemestrBean, ItemViewHolder> {

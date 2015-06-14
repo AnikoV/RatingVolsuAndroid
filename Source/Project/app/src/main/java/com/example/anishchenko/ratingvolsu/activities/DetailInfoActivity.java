@@ -24,6 +24,7 @@ import com.melnykov.fab.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.SortedMap;
 
 public class DetailInfoActivity extends BaseSpiceActivity implements BaseListFragment.IPageSelector {
@@ -56,11 +57,9 @@ public class DetailInfoActivity extends BaseSpiceActivity implements BaseListFra
         }
         mark = DatabaseManager.INSTANCE.getObject(getIntent().getExtras().getString("mark"), MarkBean.class);
         fab = (FloatingActionButton) findViewById(R.id.fab);
-        if(mark.isFavorite())
-        {
+        if (mark.isFavorite()) {
             fab.hide(true);
-        }
-        else {
+        } else {
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -87,9 +86,7 @@ public class DetailInfoActivity extends BaseSpiceActivity implements BaseListFra
             i.putExtra("student_id", getIntent().getExtras().getString("student"));
             startActivity(i);
             return true;
-        }
-        else if(id == android.R.id.home)
-        {
+        } else if (id == android.R.id.home) {
             finish();
             return true;
         }
@@ -121,13 +118,13 @@ public class DetailInfoActivity extends BaseSpiceActivity implements BaseListFra
             GroupRatingFragment fragment = new GroupRatingFragment();
             fragment.setFAB(fab);
             if (position == 0) {
-                fragment.setData("all", markSet);
+                fragment.setData("all", markSet, "");
                 return fragment;
             }
             int cPos = 0;
             for (String key : data.Predmet.keySet()) {
                 if (cPos == position - 1) {
-                    fragment.setData(key, markSet);
+                    fragment.setData(key, markSet, getTypePredmet(DatabaseManager.INSTANCE.getObject(key, BasePredmetBean.class).Type).toUpperCase());
                     break;
                 }
                 cPos++;
@@ -152,6 +149,16 @@ public class DetailInfoActivity extends BaseSpiceActivity implements BaseListFra
                 cPos++;
             }
             return "Unknow";
+        }
+
+        private String getTypePredmet(String type) {
+            if (type.equals("1")) {
+                return "экзамен";
+            } else if (type.equals("2")) {
+                return "зачет";
+            } else {
+                return "экзамен с защитой";
+            }
         }
 
     }

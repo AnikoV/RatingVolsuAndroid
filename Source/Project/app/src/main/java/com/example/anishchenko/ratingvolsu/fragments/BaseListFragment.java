@@ -22,6 +22,7 @@ public abstract class BaseListFragment extends Fragment {
     protected TextView errorText;
     protected RecyclerView recView;
     protected ProgressBar progressBar;
+    protected TextView headerText;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -32,6 +33,7 @@ public abstract class BaseListFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        headerText = (TextView) view.findViewById(R.id.fragment_base_header);
         progressBar = (ProgressBar) view.findViewById(R.id.progress);
         errorText = (TextView) view.findViewById(R.id.error_text);
         recView = (RecyclerView) view.findViewById(R.id.recyclerview);

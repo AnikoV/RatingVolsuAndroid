@@ -32,6 +32,7 @@ public class GroupRatingFragment extends BaseListFragment implements IListItemCl
     private BaseStudentBean[] array;
     private String type;
     private FloatingActionButton fab;
+    private String title = "";
 
     @Override
     public void onAttach(Activity activity) {
@@ -46,6 +47,10 @@ public class GroupRatingFragment extends BaseListFragment implements IListItemCl
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         fab.attachToRecyclerView(recView);
+        if (!ToolBox.isEmpty(title)) {
+            headerText.setText(title);
+            headerText.setVisibility(View.VISIBLE);
+        }
     }
 
     public void setFAB(FloatingActionButton fab) {
@@ -57,7 +62,8 @@ public class GroupRatingFragment extends BaseListFragment implements IListItemCl
         return mAdapter;
     }
 
-    public void setData(final String type, String mark_set) {
+    public void setData(final String type, String mark_set, String title) {
+        this.title = title;
         ArrayList<BaseStudentBean> students = DatabaseManager.INSTANCE.getStudentList(mark_set);
         Collections.sort(students, new Comparator<BaseStudentBean>() {
             @Override

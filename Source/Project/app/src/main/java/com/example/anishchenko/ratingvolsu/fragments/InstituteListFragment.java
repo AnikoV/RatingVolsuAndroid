@@ -40,24 +40,26 @@ public class InstituteListFragment extends BaseListFragment implements IListItem
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        progressBar.setVisibility(View.VISIBLE);
-        ((BaseSpiceActivity) getActivity()).getSpiceManager().execute(new GetFacultsRequest(), new RequestListener<FacultBean[]>() {
-            @Override
-            public void onRequestFailure(SpiceException spiceException) {
-                progressBar.setVisibility(View.INVISIBLE);
-                Toast.makeText(getActivity(), "Ошибка сервера", Toast.LENGTH_SHORT).show();
-                showNoData();
-            }
-
-            @Override
-            public void onRequestSuccess(FacultBean[] facultBeans) {
-                progressBar.setVisibility(View.INVISIBLE);
-                if (facultBeans.length == 0) {
+        if (mAdapter.getData().length == 0) {
+            progressBar.setVisibility(View.VISIBLE);
+            ((BaseSpiceActivity) getActivity()).getSpiceManager().execute(new GetFacultsRequest(), new RequestListener<FacultBean[]>() {
+                @Override
+                public void onRequestFailure(SpiceException spiceException) {
+                    progressBar.setVisibility(View.INVISIBLE);
+                    Toast.makeText(getActivity(), "Ошибка сервера", Toast.LENGTH_SHORT).show();
                     showNoData();
                 }
-                mAdapter.setData(facultBeans);
-            }
-        });
+
+                @Override
+                public void onRequestSuccess(FacultBean[] facultBeans) {
+                    progressBar.setVisibility(View.INVISIBLE);
+                    if (facultBeans.length == 0) {
+                        showNoData();
+                    }
+                    mAdapter.setData(facultBeans);
+                }
+            });
+        }
     }
 
     @Override
